@@ -16,13 +16,8 @@ def verificar():
     
     try:
         n = int(numero)
-
-        respuesta = {
-        "numero": numero,
-        "es_primo": es_primo(numero)
-        }
-
-        return jsonify(respuesta)
+        resultado = es_primo(n)
+        return jsonify({"numero": n, "es_primo": resultado})
     except ValueError:
         return jsonify({"error": "el parámetro n debe ser un número entero"}),
     
