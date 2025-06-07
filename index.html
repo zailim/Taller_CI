@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Números Primos</title>
+</head>
+<body>
+    <h2>Ingresa un número para verificar si es primo:</h2>
+    <input type="number" id="numero">
+    <button onclick="verificarPrimo()">Verificar</button>
+    <p id="resultado"></p>
+
+    <script>
+        function verificarPrimo() {
+            let numero = document.getElementById("numero").value;
+            fetch(`https://taller-ci.onrender.com/es_primo?n=${numero}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("resultado").innerText =
+                        `Número: ${data.numero}, ¿Es primo? ${data.es_primo}`;
+                })
+                .catch(error => {
+                    document.getElementById("resultado").innerText = "Error al obtener la respuesta";
+                });
+        }
+    </script>
+</body>
+</html>
