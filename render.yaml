@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: taller-api-primos
+    env: python
+    plan: free
+    branch: main
+    buildCommand: "pip install -r requerimientos.txt"
+    startCommand: "python app.py"
+    autoDeploy: true
