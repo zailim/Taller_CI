@@ -49,3 +49,17 @@ jobs:
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Verificar despliegue en entorno de entrega
+      run: curl -sSf https://taller-ci.onrender.com || exit 1
+
+    - name: Notificar que Render está activo
+      if: success()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "Deploy activo: https://taller-ci.onrender.com"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK }}
