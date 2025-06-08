@@ -59,7 +59,7 @@ jobs:
       id: check_render
       run: |
         DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].status')
+        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
 
         echo "Estado del despliegue: $DEPLOY_STATUS"
         echo "::set-output name=status::$DEPLOY_STATUS"
