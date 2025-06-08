@@ -55,19 +55,44 @@ jobs:
     needs: build  # Espera a que la CI termine antes de desplegar
 
     steps:
-    - name: Desplegar en Render
+    - name: Verificar estado del despliegue en Render
+      id: check_render
       run: |
-        echo "Iniciando despliegue en Render..."
-        sleep 5  # Simulación de despliegue (reemplázalo con comandos reales)
-        echo "Despliegue exitoso"
+        DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].status')
 
-    - name: Notificar éxito de despliegue a Slack
-      if: success()
+        echo "Estado del despliegue: $DEPLOY_STATUS"
+        echo "::set-output name=status::$DEPLOY_STATUS"
+
+    - name: Notificar despliegue en progreso
+      if: ${{ steps.check_render.outputs.status == 'in_progress' }}
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
           {
-            "text": "Despliegue exitoso en Render para `${{ github.repository }}`!\ncommit `${{ github.sha }}`"
+            "text": "🔄 *Despliegue en Render en curso...*"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Notificar despliegue exitoso
+      if: ${{ steps.check_render.outputs.status == 'success' }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "🚀 *Despliegue exitoso en Render!* 🎉"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Notificar fallo en despliegue
+      if: ${{ steps.check_render.outputs.status == 'failed' }}
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "❌ *Falló el despliegue en Render!* 🚨\nRevisá los logs en https://dashboard.render.com"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
