@@ -27,3 +27,25 @@ jobs:
     - name: Run tests
       run: |
         pytest
+
+    - name: Notificar éxito a Slack
+      if: success()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "CI completado con éxito c: en `${{ github.repository }}`.\nCommit: `${{ github.sha }}`"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+ 
+    - name: Notificar error en Slack
+      if: failure()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "Fallo en la integración continua :c en `${{ github.repository }}`.\nRevisá el commit `${{ github.sha }}`"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
