@@ -67,7 +67,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "Despliegue exitoso en Render para `${{ github.repository }}`!\nRevisá el commit `${{ github.sha }}`"
+            "text": "Despliegue exitoso en Render para `${{ github.repository }}`!\ncommit `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
