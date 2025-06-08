@@ -49,7 +49,7 @@ jobs:
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        
+
     - name: Verificar estado del despliegue en Render
       id: check_render
       run: |
@@ -91,3 +91,8 @@ jobs:
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Mostrar estado del despliegue en logs
+      run: |
+        echo "Estado del despliegue recibido: ${{ steps.check_render.outputs.status }}"
+
