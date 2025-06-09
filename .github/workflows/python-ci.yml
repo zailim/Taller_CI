@@ -72,7 +72,7 @@ jobs:
         
     - name: Esperar si el estado aún no es 'live'
       if: ${{ steps.check_render.outputs.status != 'live' }}
-      run: sleep 30  # Espera 30 segundos antes de hacer otra consulta
+      run: sleep 40  # Espera 60 segundos antes de hacer otra consulta
 
     - name: Verificar estado final del despliegue en Render
       if: ${{ steps.check_render.outputs.status != 'live' }}
@@ -82,6 +82,7 @@ jobs:
 
         echo "Estado final recibido: $DEPLOY_STATUS"
         echo "::set-output name=status::$DEPLOY_STATUS"
+
 
     - name: Notificar despliegue exitoso
       if: ${{ steps.check_render.outputs.status == 'live' }}
