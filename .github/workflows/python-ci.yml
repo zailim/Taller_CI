@@ -50,24 +50,13 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Verificar estado del despliegue en Render (esperando actualización)
+    - name: Verificar estado inicial del despliegue en Render
       id: check_render
       run: |
-        for i in {1..5}; do  # Intentará hasta 5 veces antes de rendirse
-          DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-          https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
+        DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
 
-          echo "Intento $i - Estado del despliegue: $DEPLOY_STATUS"
-          
-          if [ "$DEPLOY_STATUS" == "live" ]; then
-            echo "::set-output name=status::$DEPLOY_STATUS"
-            exit 0  # Termina si el estado ya es 'live'
-          fi
-
-          sleep 20  # Espera 20 segundos antes de volver a consultar
-        done
-
-        echo "No se alcanzó 'live', usando el último estado conocido."
+        echo "Estado inicial recibido: $DEPLOY_STATUS"
         echo "::set-output name=status::$DEPLOY_STATUS"
 
     - name: Notificar despliegue en progreso
@@ -80,6 +69,19 @@ jobs:
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        
+    - name: Esperar si el estado aún no es 'live'
+      if: ${{ steps.check_render.outputs.status != 'live' }}
+      run: sleep 30  # Espera 30 segundos antes de hacer otra consulta
+
+    - name: Verificar estado final del despliegue en Render
+      if: ${{ steps.check_render.outputs.status != 'live' }}
+      run: |
+        DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
+
+        echo "Estado final recibido: $DEPLOY_STATUS"
+        echo "::set-output name=status::$DEPLOY_STATUS"
 
     - name: Notificar despliegue exitoso
       if: ${{ steps.check_render.outputs.status == 'live' }}
