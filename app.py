@@ -3,6 +3,9 @@ from primos import es_primo
 
 app = Flask(__name__)
 
+# app.py
+raise RuntimeError("Rompiendo el deploy para probar la notificación")
+
 @app.route("/")
 def inicio():
     return "API de numeros primos - Taller de integracion continua"
