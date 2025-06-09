@@ -67,7 +67,7 @@ jobs:
 
           echo "Intento $i - Estado del despliegue: $DEPLOY_STATUS"
 
-          if [ "$DEPLOY_STATUS" == "live" ] || [ "$DEPLOY_STATUS" == "failed" ]; then
+          if [ "$DEPLOY_STATUS" == "live" ] || [ "$DEPLOY_STATUS" == "update_failed" ]; then
             echo "status=$DEPLOY_STATUS" >> $GITHUB_OUTPUT
             exit 0
           fi
@@ -90,7 +90,7 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     - name: Notificar despliegue fallido
-      if: ${{ steps.check_render.outputs.status == 'failed' }}
+      if: ${{ steps.check_render.outputs.status == 'update_failed' }}
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
