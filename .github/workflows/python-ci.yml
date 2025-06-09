@@ -76,7 +76,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "✅ Despliegue exitoso en Render! 🎉"
+            "text": "Despliegue exitoso en Render!"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -87,13 +87,9 @@ jobs:
       with:
         payload: |
           {
-            "text": "⚠ El despliegue en Render falló. Revisá el dashboard!"
+            "text": "⚠ El despliegue en Render falló. Revisar el dashboard."
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
 
-
-    - name: Mostrar estado del despliegue en logs
-      run: |
-        echo "Estado del despliegue recibido: ${{ steps.check_render.outputs.status }}"
 
