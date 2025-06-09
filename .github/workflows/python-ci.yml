@@ -60,18 +60,18 @@ jobs:
         echo "::set-output name=status::$DEPLOY_STATUS"
 
     - name: Notificar despliegue en progreso
-      if: ${{ steps.check_render.outputs.status == 'in_progress' }}
+      if: ${{ steps.check_render.outputs.status == 'build_in_progress' || steps.check_render.outputs.status == 'in_progress' }}
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
           {
-            "text": "🔄 *Despliegue en Render en curso...*"
+            "text": "🔄 *El despliegue en Render está en proceso...*"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     - name: Notificar despliegue exitoso
-      if: ${{ steps.check_render.outputs.status == 'success' }}
+      if: ${{ steps.check_render.outputs.status == 'live' }}
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
@@ -81,16 +81,18 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Notificar fallo en despliegue
-      if: ${{ steps.check_render.outputs.status == 'failed' }}
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: |
-          {
-            "text": "❌ *Falló el despliegue en Render!* 🚨\nRevisá los logs en https://dashboard.render.com"
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#
+#    - name: Notificar despliegue fallido
+#      if: ${{ steps.check_render.outputs.status == 'live' }}
+#      uses: slackapi/slack-github-action@v1.24.0
+#      with:
+#        payload: |
+#          {
+#            "text": "🚀 *Despliegue exitoso en Render!* 🎉"
+#          }
+#      env:
+#        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#
 
     - name: Mostrar estado del despliegue en logs
       run: |
