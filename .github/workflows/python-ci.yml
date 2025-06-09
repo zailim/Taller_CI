@@ -72,7 +72,7 @@ jobs:
         
     - name: Esperar si el estado aún no es 'live'
       if: ${{ steps.check_render.outputs.status != 'live' }}
-      run: sleep 50  # Espera 60 segundos antes de hacer otra consulta
+      run: sleep 60  # Espera 60 segundos antes de hacer otra consulta
 
     - name: Verificar estado final del despliegue en Render
       if: ${{ steps.check_render.outputs.status != 'live' }}
