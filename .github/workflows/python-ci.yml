@@ -45,15 +45,23 @@ jobs:
       with:
         payload: |
           {
-            "text": "Fallo en la integración continua :c en `${{ github.repository }}`.\nRevisá el commit `${{ github.sha }}`"
+            "text": "Fallo en la integración continua :c en `${{ github.repository }}`.\nRevisar el commit: `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+    - name: Iniciar despliegue manual en Render
+      if: success()
+      run: |
+        curl -X POST https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys \
+          -H 'Accept: application/json' \
+          -H 'Authorization: Bearer ${{ secrets.RENDER_API_KEY }}' \
+          -d ''
+
     - name: Verificar estado del despliegue en Render (esperando actualización)
       id: check_render
       run: |
-        for i in {1..10}; do 
+        for i in {1..10}; do  # Aumentamos a 10 intentos
           DEPLOY_STATUS=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
 
@@ -64,7 +72,7 @@ jobs:
             exit 0
           fi
 
-          sleep 20
+          sleep 30
         done
 
         # Si no se detectó un estado final
