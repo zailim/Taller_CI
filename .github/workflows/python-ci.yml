@@ -34,7 +34,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "CI completado con éxito c: en `${{ github.repository }}`.\nCommit: `${{ github.sha }}`"
+            "text": "CI completado con éxito 🙏​ en `${{ github.repository }}`.\nCommit: `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -45,7 +45,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "Fallo en la integración continua :c en `${{ github.repository }}`.\nRevisar el commit: `${{ github.sha }}`"
+            "text": "Fallo en la integración continua❗❗en `${{ github.repository }}`.\nRevisar el commit: `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -61,7 +61,7 @@ jobs:
     - name: Verificar estado del despliegue en Render (esperando actualización)
       id: check_render
       run: |
-        for i in {1..10}; do  # Aumentamos a 10 intentos
+        for i in {1..10}; do  
           DEPLOY_STATUS=$(curl -s -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
 
@@ -84,7 +84,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "Despliegue exitoso en Render!"
+            "text": "😎Despliegue exitoso en Render😎"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -95,7 +95,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "⚠ El despliegue en Render falló. Revisar el dashboard."
+            "text": " El despliegue en Render falló. Revisar el dashboard.⚠"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL}}
