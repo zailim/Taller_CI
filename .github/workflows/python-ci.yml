@@ -50,13 +50,24 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-    - name: Verificar estado del despliegue en Render
+    - name: Verificar estado del despliegue en Render (esperando actualización)
       id: check_render
       run: |
-        DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-        https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
+        for i in {1..5}; do  # Intentará hasta 5 veces antes de rendirse
+          DEPLOY_STATUS=$(curl -X GET -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          https://api.render.com/v1/services/srv-d120e4s9c44c73fq0ftg/deploys | jq -r '.[0].deploy.status')
 
-        echo "Estado del despliegue: $DEPLOY_STATUS"
+          echo "Intento $i - Estado del despliegue: $DEPLOY_STATUS"
+          
+          if [ "$DEPLOY_STATUS" == "live" ]; then
+            echo "::set-output name=status::$DEPLOY_STATUS"
+            exit 0  # Termina si el estado ya es 'live'
+          fi
+
+          sleep 20  # Espera 20 segundos antes de volver a consultar
+        done
+
+        echo "No se alcanzó 'live', usando el último estado conocido."
         echo "::set-output name=status::$DEPLOY_STATUS"
 
     - name: Notificar despliegue en progreso
