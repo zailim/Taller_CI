@@ -6,3 +6,5 @@ def es_primo(n):
         if n % i == 0:
             return False
     return True
+
+#test de prueba jejeeeeee
