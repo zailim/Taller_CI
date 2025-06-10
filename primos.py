@@ -7,4 +7,4 @@ def es_primo(n):
             return False
     return True
 
-#test de prueba jejeeeeee
+#test de prueba para jira :)
