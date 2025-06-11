@@ -28,6 +28,15 @@ jobs:
       run: |
         pytest
 
+    - name: Feedback con Slack para éxito en commit
+      if: success() && github.event_name == 'push'
+      env:
+        SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\"${{github.actor}} realizó un push en la rama ${{github.ref_name}}"}" \
+          $SLACK_WEBHOOK_URL
+
     - name: Notificar éxito a Slack
       if: success()
       uses: slackapi/slack-github-action@v1.24.0
