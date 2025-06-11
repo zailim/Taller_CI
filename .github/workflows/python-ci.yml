@@ -34,7 +34,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "${{github.ref_nam}} realizó un push"
+            "text": "${{github.actor}} realizó un push"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
