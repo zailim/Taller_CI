@@ -46,7 +46,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "CI completado con éxito 🙏​ en `${{ github.repository }}`.\nCommit: `${{ github.sha }}`"
+            "text": "CI: Build y tests exitosos 🙏​ en `${{ github.repository }}`.\nCommit: `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
