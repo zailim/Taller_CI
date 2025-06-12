@@ -4,7 +4,7 @@ from primos import es_primo
 app = Flask(__name__)
 
 # app.py
-#raise RuntimeError("Rompiendo el deploy para probar la notificación")
+raise RuntimeError("Rompiendo el deploy para probar la notificación")
 
 @app.route("/")
 def inicio():
