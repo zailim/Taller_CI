@@ -57,7 +57,7 @@ jobs:
       with:
         payload: |
           {
-            "text": "Fallo en la integración continua❗❗en `${{ github.repository }}`.\nRevisar el commit: `${{ github.sha }}`"
+            "text": "CI: Ocurrió un fallo en el test❗❗en `${{ github.repository }}`.\nRevisar el commit: `${{ github.sha }}`"
           }
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
